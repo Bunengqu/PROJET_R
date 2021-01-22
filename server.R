@@ -101,14 +101,14 @@ Station@coords[1,] = c(7.071357,43.611925)    # Changement de SRC DE station
 
 inters_grille_bv = function(rain, ALL_BV) {
     rain_bv = c()
-    resolution = res(rain)[1]*res(rain)[2]             # La surface de chaque pixel
+    resolution = res(rain)[1]*res(rain)[2]               # La surface de chaque pixel
     for (i in 1:length(ALL_BV))
     {
         bv          = ALL_BV[[i]]
         tmp         = extract(rain,bv,df=TRUE)
         Pluie_mm_h  = sum(tmp[,2],na.rm = TRUE)          # Son unité est : mm/h
         Pluie_m3_h  = (Pluie_mm_h*resolution/1000)*0.1   # Son unité est : m3/h et on pense le coefficient
-        # de ruissellement est de 0.1
+                                                         # de ruissellement est de 0.1
 
         Gradient    = Pluie_m3_h/(bv$temp_reponse*60*60) # Son unité est : m3/s/h
         Gradientmax = bv$Gradientmax                     # l'index est plus élevé , la priorité de jaugeage
@@ -132,7 +132,7 @@ shinyServer(function(input, output) {
     qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
     col_vector    = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
     pal_bv        = sample(col_vector, 6)
-    pal_BV        = colorFactor(palette = pal_bv,
+    pal_BV        = colorFactor(palette = pal_bv[1:5],
                                 domain = c("Brague","Brague2","Loup","Siagn","Var"))
 
     # Définit la palette pour le légend des échelles de risques
@@ -182,13 +182,13 @@ shinyServer(function(input, output) {
                     group  = "BASSIN VERSANT",
                     popup  = ~paste("Cour d'eau :",Popup)
         ) %>%
-        addPolylines(data  = stream ,
+        addPolylines(data  = stream ,                         # Ajouter les cours d'eau
                      color = "navy",
                      weight  = 2,
                      opacity = 0.4,
                      group = "COUR D'EAU",
         ) %>%
-        addCircleMarkers(
+        addCircleMarkers(                                     # Ajouter les stations de jaugage
             radius = 6,
             color  = pal_bv[6],
             stroke = TRUE,
@@ -212,10 +212,10 @@ shinyServer(function(input, output) {
                   position = "bottomright",
         ) %>%
         addLayersControl(
-            # baseGroups  = c("COUR D'EAU", "Toner", "Toner Lite"), 最基本的不能动
+            # baseGroups  = c("COUR D'EAU", "Toner", "Toner Lite"),
             overlayGroups = c("STATION", "COUR D'EAU","BASSIN VERSANT"),
             position      = "bottomright",
-            options       = layersControlOptions(collapsed = TRUE) # 选择是否折叠
+            options       = layersControlOptions(collapsed = TRUE)
         )
 
     output$myMap = renderLeaflet(map)
@@ -226,7 +226,7 @@ shinyServer(function(input, output) {
 
     observeEvent(input$DATA_pluie, {
         list_files = as.data.frame(input$DATA_pluie[4])
-        # 显示slider
+        # Affiche le slider
         output$ui <- renderUI({
             sliderInput(inputId = "dynamic",
                         label   = "Les pluies",
@@ -239,7 +239,7 @@ shinyServer(function(input, output) {
         })
     })
 
-    #根据slider显示raster
+    # Afficle le raster des pluies en fonction du valeur de slider
     observeEvent(input$dynamic,{
         # index de la pluie
         Pluie_ind <- reactive({
@@ -250,7 +250,7 @@ shinyServer(function(input, output) {
         rain@crs   = CRS("+init=epsg:27572")
 
 
-        # 定risque
+        # défit les risques
         all           = inters_grille_bv(rain,ALL_BV)
         noms_courdeau = c("Brague", "Valmasque" ,"Loup","Siagn","Var")
         noms_index    = c(1,4,2,3,5)
@@ -272,7 +272,7 @@ shinyServer(function(input, output) {
                             domain = c(1:5))
 
 
-        # 修改存在的map
+        # Change les couches
         leafletProxy("myMap") %>%
             clearControls()%>%
             clearMarkers()%>%
@@ -307,10 +307,10 @@ shinyServer(function(input, output) {
                       position = "topleft"
             )%>%
             addLayersControl(
-                # baseGroups  = c("COUR D'EAU", "Toner", "Toner Lite"), 最基本的不能动
+                # baseGroups  = c("COUR D'EAU", "Toner", "Toner Lite"),
                 overlayGroups = c("STATION", "COUR D'EAU","BASSIN VERSANT","PLUIES"),
                 position      = "bottomright",
-                options       = layersControlOptions(collapsed = TRUE) # 折叠
+                options       = layersControlOptions(collapsed = TRUE)   # éffondé
             )
     })
 })
