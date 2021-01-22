@@ -13,7 +13,7 @@ library(shinythemes)
 
 
 ##########################################################################################################
-#                                Définit l'interface du logiciel
+# Définit l'interface du logiciel
 ##########################################################################################################
 
 shinyUI(navbarPage("PROJET R",
@@ -24,15 +24,15 @@ shinyUI(navbarPage("PROJET R",
                             absolutePanel(top   = "10vh",
                                           right = "3vw",
                                           fileInput(
-                                              inputId     = "DATA_pluie",
-                                              label       = "Ex_dossier_pluie",
-                                              multiple    = TRUE,   # Affiche plusieurs fichers dans une
-                                              accept      = NULL,   # seule fois
-                                              width       = NULL ,
-                                              buttonLabel = "Browse...",
-                                              placeholder = "No file selected"),
-                                          uiOutput("ui")            # Après le chargements des raster ,il y aura
-                            )                                       # un slider
+                                            inputId     = "DATA_pluie",
+                                            label       = "Ex_dossier_pluie",
+                                            multiple    = TRUE,   # Affiche plusieurs fichers dans une
+                                            accept      = NULL,   # seule fois
+                                            width       = NULL ,
+                                            buttonLabel = "Browse...",
+                                            placeholder = "No file selected"),
+                                          uiOutput("ui")          # Après le chargements des raster ,il y aura
+                            )                                     # un slider
                    ),
                    tabPanel("Component 2"),
                    tabPanel("Component 3")

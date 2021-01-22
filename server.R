@@ -82,6 +82,7 @@ Dir_shp    = "DATA/couches_shp/"
 Cours_deau = readOGR(paste0(Dir_shp,"Cours_deau.shp"))
 stream     = spTransform(Cours_deau, CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"))
 Station    = readShapePoints(paste0(Dir_shp,"Station_priorisation_jaugeage.shp"))  # Du package maptools
+Station@coords[1,] = c(7.071357,43.611925)    # Changement de SRC DE station
 
 ########################################################################################################
 # Une Fonction qui définit les échelles de risque
